@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entraînement Brevet Français - Révisions DNB</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --correct-bg: #dcfce7;
+            --correct-border: #22c55e;
+            --correct-text: #15803d;
+            --wrong-bg: #fee2e2;
+            --wrong-border: #ef4444;
+            --wrong-text: #b91c1c;
+            --shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: #312e81;
+            margin-bottom: 0.25rem;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 680px;
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 1.75rem;
+            box-shadow: var(--shadow);
+        }
+
+        /* Barre de sélection du thème */
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            background: #eef2ff;
+            padding: 0.75rem 1rem;
+            border-radius: 0.6rem;
+            margin-bottom: 1.25rem;
+            border: 1px solid #c7d2fe;
+            flex-wrap: wrap;
+        }
+
+        .filter-label {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #3730a3;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .filter-select {
+            padding: 0.5rem 0.8rem;
+            border-radius: 0.5rem;
+            border: 1px solid #a5b4fc;
+            background: #ffffff;
+            color: #1e1b4b;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            flex-grow: 1;
+            max-width: 320px;
+        }
+
+        .filter-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f1f5f9;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 0.25rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 1.25rem;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .option-btn {
+            width: 100%;
+            text-align: left;
+            padding: 0.85rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.6rem;
+            background: #ffffff;
+            font-size: 0.98rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            color: var(--text-main);
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background: #f5f3ff;
+        }
+
+        .option-btn.correct {
+            background-color: var(--correct-bg);
+            border-color: var(--correct-border);
+            color: var(--correct-text);
+            font-weight: 600;
+        }
+
+        .option-btn.wrong {
+            background-color: var(--wrong-bg);
+            border-color: var(--wrong-border);
+            color: var(--wrong-text);
+        }
+
+        .explanation-box {
+            background: #eff6ff;
+            border-left: 4px solid var(--primary);
+            padding: 0.85rem 1rem;
+            border-radius: 0.4rem;
+            margin-bottom: 1.25rem;
+            font-size: 0.92rem;
+            line-height: 1.4;
+            display: none;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 0.85rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0.6rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s ease;
+            display: none;
+        }
+
+        .action-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .results-container {
+            text-align: center;
+            display: none;
+        }
+
+        .results-container h2 {
+            font-size: 1.6rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .rank-badge {
+            display: inline-block;
+            background: #fef3c7;
+            color: #92400e;
+            padding: 0.4rem 0.8rem;
+            border-radius: 1rem;
+            font-weight: bold;
+            margin: 1rem 0;
+            font-size: 1.05rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1.25rem;
+        }
+
+        .reset-btn {
+            background: #f1f5f9;
+            color: var(--text-main);
+            border: 1px solid #cbd5e1;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .reset-btn:hover {
+            background: #e2e8f0;
+        }
+
+        .primary-action-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .primary-action-btn:hover {
+            background: var(--primary-hover);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Français Brevet - Module de Révision DNB</h1>
+        <p class="subtitle">Questions issues des annales et points clés des rapports de jury</p>
+    </header>
+
+    <div class="container">
+        <!-- Barre de sélection du thème -->
+        <div class="filter-bar">
+            <label for="category-filter" class="filter-label">🎯 Thème à réviser :</label>
+            <select id="category-filter" class="filter-select" onchange="onCategoryChange(this.value)">
+                <!-- Rempli dynamiquement en JS -->
+            </select>
+        </div>
+
+        <div id="quiz-screen">
+            <div class="stats-bar">
+                <span class="stat-item">🎯 Score : <span id="score-display">0</span></span>
+                <span class="stat-item">🔥 Série : <span id="streak-display">0</span></span>
+                <span class="stat-item">📌 Question : <span id="num-display">1</span>/<span id="total-display">30</span></span>
+            </div>
+
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+
+            <div class="badge" id="category-badge">Grammaire</div>
+            <div class="question-text" id="question-text">Chargement de la question...</div>
+
+            <div class="options-list" id="options-container"></div>
+
+            <div class="explanation-box" id="explanation-box"></div>
+
+            <button class="action-btn" id="next-btn" onclick="nextQuestion()">Question suivante →</button>
+        </div>
+
+        <div class="results-container" id="results-screen">
+            <h2>Session Terminée ! 🎉</h2>
+            <p id="results-theme-info" style="color: var(--text-muted); margin-bottom: 0.5rem;"></p>
+            <div class="rank-badge" id="rank-display">Niveau : Candidate au Brevet</div>
+            <p style="font-size: 1.2rem; margin-bottom: 1rem;">
+                Score obtenu : <strong id="final-score">0</strong> / <span id="final-total">30</span>
+            </p>
+            <div class="btn-group">
+                <button class="primary-action-btn" onclick="restartQuiz()">Recommencer ce thème 🔄</button>
+                <button class="reset-btn" onclick="selectAnotherCategory()">Choisir un autre thème 🎯</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questionBank = [
+            // GRAMMAIRE & CLASSES GRAMMATICALES
+            {
+                id: 1,
+                category: "Grammaire",
+                question: "Dans la phrase « Le roman que j'ai lu hier est captivant », quelle est la classe grammaticale exacte du mot « que » ?",
+                options: ["Conjonction de subordination", "Pronom relatif", "Pronom démonstratif", "Adverbe de liaison"],
+                correct: 1,
+                explanation: "« Que » remplace le nom « le roman » (son antécédent) et introduit la proposition subordonnée relative. C'est donc un pronom relatif (fonction : COD de 'ai lu')."
+            },
+            {
+                id: 2,
+                category: "Grammaire",
+                question: "Dans « Cette décision me paraît judicieuse », quelle est la fonction grammaticale de l'adjectif « judicieuse » ?",
+                options: ["Épithète liée", "Complément d'objet direct (COD)", "Attribut du sujet", "Apposition"],
+                correct: 2,
+                explanation: "L'adjectif est relié au sujet « Cette décision » par un verbe d'état (« paraître »). Il s'agit donc d'un attribut du sujet."
+            },
+            {
+                id: 3,
+                category: "Grammaire",
+                question: "Quelle est la nature de la proposition soulignée : « Il parle fort [afin que chacun puisse entendre] » ?",
+                options: ["Proposition subordonnée relative", "Proposition subordonnée conjonctive circonstancielle de but", "Proposition subordonnée conjonctive complétive", "Proposition indépendante coordonnée"],
+                correct: 1,
+                explanation: "Introduite par la locution conjonctive « afin que » + subjonctif, elle exprime l'intention/le but. C'est une subordonnée circonstancielle de but."
+            },
+            {
+                id: 4,
+                category: "Grammaire",
+                question: "Dans la phrase « L'enfant a offert un dessin [à sa mère] », quelle est la fonction du groupe souligné ?",
+                options: ["Complément d'objet indirect (COI)", "Complément d'objet direct (COD)", "Complément d'agent", "Attribut du COD"],
+                correct: 0,
+                explanation: "« À sa mère » répond à la question « à qui ? » après le verbe. C'est le complément d'objet indirect (COI)."
+            },
+            {
+                id: 5,
+                category: "Grammaire",
+                question: "Dans « [Effrayé par l'orage], le chien s'est caché sous le lit », quelle est la fonction du groupe adjectival ?",
+                options: ["Épithète liée", "Apposé (ou détaché) au sujet 'le chien'", "Attribut du sujet", "Complément circonstanciel de cause"],
+                correct: 1,
+                explanation: "Séparé du nom qu'il qualifie par une virgule, le groupe adjectival est mis en apposition (ou épithète détachée) au sujet 'le chien'."
+            },
+
+            // CONJUGAISON & VALEUR DES TEMPS
+            {
+                id: 6,
+                category: "Conjugaison",
+                question: "Dans « Elle lisait paisiblement quand soudain la porte s'ouvrit », quelle est la valeur de l'imparfait « lisait » ?",
+                options: ["Action répétitive / habitude", "Action d'arrière-plan en cours d'accomplissement", "Présent d'actualité", "Action brève et ponctuelle"],
+                correct: 1,
+                explanation: "L'imparfait exprime une action secondaire ou d'arrière-plan, non limitée dans le temps, interrompue par une action brève au passé simple ('s'ouvrit')."
+            },
+            {
+                id: 7,
+                category: "Conjugaison",
+                question: "À quel mode et à quel temps est le verbe dans : « Il faut absolument que nous [sachions] la vérité » ?",
+                options: ["Indicatif présent", "Subjonctif présent", "Conditionnel présent", "Impératif présent"],
+                correct: 1,
+                explanation: "Le verbe 'savoir' après 'il faut que' se conjugue au subjonctif présent (que je sache, que nous sachions)."
+            },
+            {
+                id: 8,
+                category: "Conjugaison",
+                question: "Dans la phrase « Si j'avais le temps, je [réviserais] toute la soirée », à quel mode est employé « réviserais » ?",
+                options: ["Indicatif", "Subjonctif", "Conditionnel", "Participe"],
+                correct: 2,
+                explanation: "Dans le système hypothétique (Si + imparfait -> conditionnel présent), 'réviserais' est au conditionnel présent."
+            },
+            {
+                id: 9,
+                category: "Conjugaison",
+                question: "Quelle est la valeur du présent dans : « La Terre tourne autour du Soleil » ?",
+                options: ["Présent d'énonciation", "Présent de vérité générale", "Présent de narration", "Présent de futur proche"],
+                correct: 1,
+                explanation: "Ce présent exprime un fait scientifique permanent, valable de tout temps : c'est un présent de vérité générale (ou omnitemporel)."
+            },
+            {
+                id: 10,
+                category: "Conjugaison",
+                question: "Identifiez le temps du verbe dans : « Dès qu'il [eut fini] son discours, la foule applaudit. »",
+                options: ["Plus-que-parfait", "Passé antérieur", "Passé composé", "Conditionnel passé"],
+                correct: 1,
+                explanation: "Auxiliaire 'avoir' au passé simple ('eut') + participe passé ('fini') = Passé antérieur de l'indicatif."
+            },
+
+            // ORTHOGRAPHE & PIÈGES DNB
+            {
+                id: 11,
+                category: "Orthographe",
+                question: "Choisissez la phrase orthographiée correctement :",
+                options: [
+                    "Les lettres qu'il a écrit sont arrivées.",
+                    "Les lettres qu'il a écrites sont arrivées.",
+                    "Les lettres qu'il a écritent sont arrivées.",
+                    "Les lettres qu'il a écrit-es sont arrivées."
+                ],
+                correct: 1,
+                explanation: "Avec l'auxiliaire 'avoir', le participe passé s'accorde en genre et nombre avec le COD ('qu'' mis pour 'les lettres', féminin pluriel) car il est placé AVANT le verbe."
+            },
+            {
+                id: 12,
+                category: "Orthographe",
+                question: "Complétez correctement : « Elles se sont [...] des souvenirs de vacances. »",
+                options: ["racontées", "raconté", "raconter", "racontés"],
+                correct: 1,
+                explanation: "Le verbe pronominal a un COD direct ('des souvenirs') placé APRÈS le verbe. 'se' est COI (raconter qqch À quelqu'un). Le participe passé reste donc invariable : 'raconté'."
+            },
+            {
+                id: 13,
+                category: "Orthographe",
+                question: "Complétez la phrase : « [...] à son frère, il refuse de s'avouer vaincu. »",
+                options: ["Quand", "Qu'en", "Quant", "Camp"],
+                correct: 2,
+                explanation: "Devant les prépositions 'à', 'au', 'aux', on écrit 'Quant' avec un 't' (qui signifie 'en ce qui concerne')."
+            },
+            {
+                id: 14,
+                category: "Orthographe",
+                question: "Quelle forme verbale convient : « Il a pensé à [regarder / regardé] ses notes avant de [répondre / répondu] » ?",
+                options: ["regardé / répondu", "regarder / répondre", "regardé / répondre", "regarder / répondu"],
+                correct: 1,
+                explanation: "Après une préposition ('à', 'de'), le verbe se met systématiquement à l'infinitif en -er ou -re (Astuce : remplacer par 'prendre')."
+            },
+            {
+                id: 15,
+                category: "Orthographe",
+                question: "Comment accorder « leur » dans : « Ils [...] ont expliqué [...] raisons. » ?",
+                options: ["leurs / leur", "leur / leurs", "leur / leur", "leurs / leurs"],
+                correct: 1,
+                explanation: "Devant le verbe 'ont expliqué', 'leur' est un pronom personnel invariable. Devant le nom pluriel 'raisons', 'leurs' est un déterminant possessif qui s'accorde au pluriel."
+            },
+
+            // FIGURES DE STYLE & ANALYSE LITTÉRAIRE
+            {
+                id: 16,
+                category: "Figures de style",
+                question: "Quelle figure de style est utilisée dans « Cet homme est un véritable lion au combat » (sans outil de comparaison) ?",
+                options: ["Comparaison", "Métaphore", "Personnification", "Hyperbole"],
+                correct: 1,
+                explanation: "Une métaphore associe deux éléments sans mot d'outil de comparaison ('comme', 'tel que'). Si on avait écrit 'fort comme un lion', ce serait une comparaison."
+            },
+            {
+                id: 17,
+                category: "Figures de style",
+                question: "Quelle figure de style consiste à attribuer des comportements ou émotions humains à une chose inanimée ?",
+                options: ["Allégorie", "Personnification", "Litote", "Anaphore"],
+                correct: 1,
+                explanation: "La personnification donne des traits, sentiments ou actions humains à un objet, une idée ou un animal (ex: 'La rue hurlait sous la tempête')."
+            },
+            {
+                id: 18,
+                category: "Figures de style",
+                question: "Quelle figure de style est présente dans « Je vous l'ai répété au moins un million de fois ! » ?",
+                options: ["Litote", "Euphemisme", "Hyperbole", "Antiphrase"],
+                correct: 2,
+                explanation: "L'hyperbole exagère fortement la réalité pour frapper l'esprit ou insister."
+            },
+            {
+                id: 19,
+                category: "Figures de style",
+                question: "Quelle figure de style réunit deux mots de sens contraires côte à côte (ex: « Cette obscure clarté ») ?",
+                options: ["Antithèse", "Oxymore", "Chiasme", "Paradoxe"],
+                correct: 1,
+                explanation: "L'oxymore juxtapose deux termes contradictoires dans le même groupe grammatical ('obscure clarté', 'silence assourdissant')."
+            },
+            {
+                id: 20,
+                category: "Figures de style",
+                question: "Quelle figure de style dit le contraire de ce qu'elle pense dans une intention ironique (ex: « Bravo, c'est du joli ! ») ?",
+                options: ["Antiphrase", "Périphrase", "Métonymie", "Allitérations"],
+                correct: 0,
+                explanation: "L'antiphrase consiste à exprimer une idée en disant son contraire, le contexte montrant clairement le sens ironique."
+            },
+
+            // VOCABULAIRE & LEXIQUE
+            {
+                id: 21,
+                category: "Vocabulaire",
+                question: "Que signifie le suffixe d'origine latine « -cide » dans des mots comme « pesticide » ou « homicide » ?",
+                options: ["Qui étudie", "Qui tue / l'action de tuer", "Qui soigne", "Qui craint"],
+                correct: 1,
+                explanation: "Le suffixe '-cide' vient du latin 'caedere' qui signifie tuer ou faire disparaître."
+            },
+            {
+                id: 22,
+                category: "Vocabulaire",
+                question: "Quel est le synonyme le plus exact de l'adjectif « éphémère » ?",
+                options: ["Éternel", "Fugace / passager", "Légendaire", "Brillant"],
+                correct: 1,
+                explanation: "Quelque chose d'éphémère dure très peu de temps (contraire : durable, éternel)."
+            },
+            {
+                id: 23,
+                category: "Vocabulaire",
+                question: "Comment appelle-t-on l'ensemble des mots d'un texte qui se rapportent à un même thème ou une même idée ?",
+                options: ["Une famille de mots", "Un champ lexical", "Un registre littéraire", "Un champ sémantique"],
+                correct: 1,
+                explanation: "Un champ lexical regroupe tous les mots (noms, verbes, adjectifs) se rapportant à une même notion (ex: champ lexical de la peur : frayeur, trembler, sombre...)."
+            },
+            {
+                id: 24,
+                category: "Vocabulaire",
+                question: "Quel est l'antonyme (contraire) précis du mot « bienveillant » ?",
+                options: ["Malveillant", "Bienfaisant", "Indifférent", "Chaleureux"],
+                correct: 0,
+                explanation: "L'antonyme formé avec le préfixe 'mal-' est 'malveillant'."
+            },
+            {
+                id: 25,
+                category: "Vocabulaire",
+                question: "Quelle est la formation du mot « incalculable » ?",
+                options: ["Préfixe in- + radical calcul + suffixe -able", "Radical incal + suffixe -culable", "Mot simple sans préfixe", "Composé de deux radicaux grecs"],
+                correct: 0,
+                explanation: "Dérivation : Préfixe privatif 'in-' + radical du verbe 'calculer' + suffixe de possibilité '-able'."
+            },
+
+            // ANALYSE & RÉDACTION / DNB
+            {
+                id: 26,
+                category: "Analyse & Rédaction",
+                question: "Transposez au discours indirect : Le guide a affirmé : « Nous arriverons demain ». Le guide a affirmé qu'ils...",
+                options: [
+                    "...arriveront demain.",
+                    "...arriveraient le lendemain.",
+                    "...sont arrivés la veille.",
+                    "...arriveraient demain."
+                ],
+                correct: 1,
+                explanation: "Au discours indirect avec un verbe introducteur au passé ('a affirmé') : le futur devient conditionnel présent ('arriveraient') et 'demain' devient 'le lendemain'."
+            },
+            {
+                id: 27,
+                category: "Analyse & Rédaction",
+                question: "Quel est le point de vue (ou focalisation) quand le narrateur sait tout des pensées, du passé et du futur de tous les personnages ?",
+                options: ["Focalisation interne", "Focalisation externe", "Focalisation zéro (omnisciente)", "Focalisation neutre"],
+                correct: 2,
+                explanation: "La focalisation zéro (ou point de vue omniscient) signifie que le narrateur a une vision globale et sait tout sur tout le monde."
+            },
+            {
+                id: 28,
+                category: "Analyse & Rédaction",
+                question: "Quel connecteur logique exprime une relation de concession ou d'opposition ?",
+                options: ["Cependant", "C'est pourquoi", "En effet", "Afin de"],
+                correct: 0,
+                explanation: "« Cependant », « néanmoins », « toutefois » expriment l'opposition ou la concession."
+            },
+            {
+                id: 29,
+                category: "Analyse & Rédaction",
+                question: "Quel connecteur logique exprime la conséquence ?",
+                options: ["Parce que", "Par conséquent", "Bien que", "Même si"],
+                correct: 1,
+                explanation: "« Par conséquent », « donc », « ainsi » introduisent le résultat ou la conséquence d'une action."
+            },
+            {
+                id: 30,
+                category: "Analyse & Rédaction",
+                question: "Dans un paragraphe argumentatif au Brevet, que doit contenir un argument pour être solide ?",
+                options: [
+                    "Uniquement une affirmation générale sans exemple",
+                    "Une explication claire illustrée par un exemple précis et analysé",
+                    "Une succession de citations sans commentaire",
+                    "Un résumé de l'histoire du texte de la première partie"
+                ],
+                correct: 1,
+                explanation: "Selon les rapports de jury du DNB, un paragraphe argumentatif réussi doit énoncer une idée claire, l'expliquer et l'illustrer avec un exemple précis issu d'une œuvre ou de l'expérience."
+            }
+        ];
+
+        // STATS & ETAT DE L'APPLICATION
+        let userData = {
+            activeFilter: "ALL",
+            score: 0,
+            streak: 0,
+            currentIndex: 0
+        };
+
+        let currentFilteredList = [];
+
+        function loadState() {
+            const saved = localStorage.getItem('dnb_francais_quiz_v3');
+            if (saved) {
+                try {
+                    userData = JSON.parse(saved);
+                } catch(e) {
+                    userData = { activeFilter: "ALL", score: 0, streak: 0, currentIndex: 0 };
+                }
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem('dnb_francais_quiz_v3', JSON.stringify(userData));
+        }
+
+        // DOM ELEMENTS
+        const filterSelect = document.getElementById('category-filter');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultsScreen = document.getElementById('results-screen');
+        const scoreDisplay = document.getElementById('score-display');
+        const streakDisplay = document.getElementById('streak-display');
+        const numDisplay = document.getElementById('num-display');
+        const totalDisplay = document.getElementById('total-display');
+        const progressBar = document.getElementById('progress-bar');
+        const categoryBadge = document.getElementById('category-badge');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const explanationBox = document.getElementById('explanation-box');
+        const nextBtn = document.getElementById('next-btn');
+
+        function populateCategoryFilter() {
+            const categories = Array.from(new Set(questionBank.map(q => q.category)));
+            
+            filterSelect.innerHTML = '';
+
+            const optionAll = document.createElement('option');
+            optionAll.value = "ALL";
+            optionAll.textContent = `🌐 Toutes les catégories (${questionBank.length} questions)`;
+            filterSelect.appendChild(optionAll);
+
+            categories.forEach(cat => {
+                const count = questionBank.filter(q => q.category === cat).length;
+                const opt = document.createElement('option');
+                opt.value = cat;
+                opt.textContent = `${cat} (${count} questions)`;
+                filterSelect.appendChild(opt);
+            });
+
+            filterSelect.value = userData.activeFilter;
+        }
+
+        function filterQuestions() {
+            if (userData.activeFilter === "ALL") {
+                currentFilteredList = [...questionBank];
+            } else {
+                currentFilteredList = questionBank.filter(q => q.category === userData.activeFilter);
+            }
+        }
+
+        function initQuiz() {
+            loadState();
+            populateCategoryFilter();
+            filterQuestions();
+
+            if (userData.currentIndex >= currentFilteredList.length) {
+                showResults();
+            } else {
+                renderQuestion();
+            }
+        }
+
+        function onCategoryChange(selectedCategory) {
+            userData.activeFilter = selectedCategory;
+            userData.currentIndex = 0;
+            userData.score = 0;
+            userData.streak = 0;
+            
+            filterQuestions();
+            saveState();
+
+            resultsScreen.style.display = 'none';
+            quizScreen.style.display = 'block';
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            totalDisplay.textContent = currentFilteredList.length;
+            const q = currentFilteredList[userData.currentIndex];
+
+            scoreDisplay.textContent = userData.score;
+            streakDisplay.textContent = userData.streak;
+            numDisplay.textContent = userData.currentIndex + 1;
+            
+            const progressPercent = ((userData.currentIndex) / currentFilteredList.length) * 100;
+            progressBar.style.width = progressPercent + '%';
+
+            categoryBadge.textContent = q.category;
+            questionText.textContent = q.question;
+
+            optionsContainer.innerHTML = '';
+            explanationBox.style.display = 'none';
+            explanationBox.textContent = '';
+            nextBtn.style.display = 'none';
+
+            q.options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = optText;
+                btn.onclick = () => selectOption(idx);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectOption(selectedIdx) {
+            const q = currentFilteredList[userData.currentIndex];
+            const buttons = optionsContainer.querySelectorAll('.option-btn');
+
+            buttons.forEach(btn => btn.disabled = true);
+
+            if (selectedIdx === q.correct) {
+                buttons[selectedIdx].classList.add('correct');
+                userData.score += 1;
+                userData.streak += 1;
+            } else {
+                buttons[selectedIdx].classList.add('wrong');
+                buttons[q.correct].classList.add('correct');
+                userData.streak = 0;
+            }
+
+            scoreDisplay.textContent = userData.score;
+            streakDisplay.textContent = userData.streak;
+
+            explanationBox.innerHTML = '<strong>Explication :</strong> ' + q.explanation;
+            explanationBox.style.display = 'block';
+
+            nextBtn.style.display = 'block';
+
+            saveState();
+        }
+
+        function nextQuestion() {
+            userData.currentIndex += 1;
+            saveState();
+
+            if (userData.currentIndex >= currentFilteredList.length) {
+                showResults();
+            } else {
+                renderQuestion();
+            }
+        }
+
+        function getEpiceneRank(score, total) {
+            const ratio = score / total;
+            if (ratio >= 0.9) return "Légende du Brevet 🏆";
+            if (ratio >= 0.75) return "Experte de la Langue ✍️";
+            if (ratio >= 0.5) return "Spécialiste de la Plume 🖋️";
+            if (ratio >= 0.25) return "Apprentie Linguiste 📖";
+            return "Candidate au Brevet 🌱";
+        }
+
+        function showResults() {
+            quizScreen.style.display = 'none';
+            resultsScreen.style.display = 'block';
+            
+            document.getElementById('final-score').textContent = userData.score;
+            document.getElementById('final-total').textContent = currentFilteredList.length;
+            
+            const themeLabel = userData.activeFilter === "ALL" 
+                ? "Toutes les catégories" 
+                : `Thème : ${userData.activeFilter}`;
+            document.getElementById('results-theme-info').textContent = themeLabel;
+
+            const rank = getEpiceneRank(userData.score, currentFilteredList.length);
+            document.getElementById('rank-display').textContent = 'Niveau atteint : ' + rank;
+
+            progressBar.style.width = '100%';
+        }
+
+        function restartQuiz() {
+            userData.score = 0;
+            userData.streak = 0;
+            userData.currentIndex = 0;
+            saveState();
+
+            resultsScreen.style.display = 'none';
+            quizScreen.style.display = 'block';
+            renderQuestion();
+        }
+
+        function selectAnotherCategory() {
+            filterSelect.focus();
+            restartQuiz();
+        }
+
+        // Lancement
+        initQuiz();
+    </script>
+</body>
+</html>
