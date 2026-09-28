@@ -1,238 +1,19 @@
-<!DOCTYPE html> 
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Objectif Brevet : Français</title>
-    <style>
-        :root {
-            --bg: #f4f7f6;
-            --primary: #4a90e2;
-            --card-bg: #ffffff;
-            --text: #333333;
-            --insuffisant: #ff4d4f;
-            --fragile: #ffa940;
-            --satisfaisant: #73d13d;
-            --tres-bon: #389e0d;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: auto;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-        }
-
-        .stats span {
-            margin-left: 15px;
-            font-weight: bold;
-            font-size: 1.1em;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1em;
-            background-color: #e0e0e0;
-            transition: background 0.3s;
-        }
-
-        button.active {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .tab-content {
-            display: none;
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-
-        .tab-content.active { display: block; }
-
-        /* Competences */
-        .competence { margin-bottom: 20px; }
-        .comp-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        .progress-bar {
-            width: 100%;
-            height: 20px;
-            background-color: #e0e0e0;
-            border-radius: 10px;
-            overflow: hidden;
-            display: flex;
-        }
-        .progress-fill {
-            height: 100%;
-            transition: width 0.5s, background-color 0.5s;
-        }
-
-        /* Badges */
-        .badges-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 15px;
-        }
-        .badge {
-            text-align: center;
-            padding: 15px;
-            border-radius: 10px;
-            background: #f0f0f0;
-            opacity: 0.4;
-            filter: grayscale(100%);
-            transition: 0.3s;
-        }
-        .badge.unlocked {
-            opacity: 1;
-            filter: grayscale(0%);
-            background: #e6f7ff;
-            border: 2px solid var(--primary);
-        }
-        .badge-icon { font-size: 2.5em; margin-bottom: 10px; }
-
-        /* Exercice */
-        .question-card { margin-bottom: 20px; padding: 15px; border-left: 5px solid var(--primary); background: #f9f9f9; }
-        .options { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
-        .option-btn { background: white; border: 2px solid var(--primary); text-align: left; }
-        .option-btn:hover { background: #e6f7ff; }
-        
-        #feedback { font-weight: bold; margin-top: 15px; }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <header>
-        <h2>🎯 DNB Français</h2>
-        <div class="stats">
-            <span title="Assiduité">🔥 <span id="streak-count">0</span> Jours</span>
-            <span title="Expérience">⭐ <span id="xp-count">0</span> XP</span>
-        </div>
-    </header>
-
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('dashboard')">📊 Progression Officielle</button>
-        <button class="tab-btn" onclick="switchTab('training')">✍️ Entraînement</button>
-        <button class="tab-btn" onclick="switchTab('badges')">🏆 Badges</button>
-    </div>
-
-    <!-- Tableau de bord -->
-    <div id="dashboard" class="tab-content active">
-        <h3>Socle Commun : Niveaux de Maîtrise</h3>
-        <p>1: Insuffisante | 2: Fragile | 3: Satisfaisante | 4: Très bonne</p>
-        
-        <div class="competence">
-            <div class="comp-header"><span>📖 Compréhension et interprétation</span><span id="lvl-comp">Niveau 1</span></div>
-            <div class="progress-bar"><div id="bar-comp" class="progress-fill" style="width: 25%;"></div></div>
-        </div>
-        <div class="competence">
-            <div class="comp-header"><span>🧠 Maîtrise de la langue (Grammaire/Ortho)</span><span id="lvl-lang">Niveau 1</span></div>
-            <div class="progress-bar"><div id="bar-lang" class="progress-fill" style="width: 25%;"></div></div>
-        </div>
-        <div class="competence">
-            <div class="comp-header"><span>✍️ Rédaction</span><span id="lvl-redac">Niveau 1</span></div>
-            <div class="progress-bar"><div id="bar-redac" class="progress-fill" style="width: 25%;"></div></div>
-        </div>
-    </div>
-
-    <!-- Entraînement -->
-    <div id="training" class="tab-content">
-        <h3>Exercice rapide</h3>
-        <div class="question-card" id="quiz-container">
-            <!-- Rempli par JS -->
-        </div>
-        <div id="feedback"></div>
-    </div>
-
-    <!-- Badges -->
-    <div id="badges" class="tab-content">
-        <h3>Tes Récompenses</h3>
-        <div class="badges-grid" id="badges-container">
-            <!-- Rempli par JS -->
-        </div>
-    </div>
-</div>
-
-<script>
-    // --- Initialisation des Données ---
-    let appData = JSON.parse(localStorage.getItem('dnb_fr_data')) || {
-        xp: 0,
-        streak: 1,
-        lastDate: new Date().toDateString(),
-        competences: {
-            'comp': 1,
-            'lang': 1,
-            'redac': 1
-        },
-        badgesUnlocked: []
-    };
-
-    const badgesDef = [
-        { id: 'first_blood', icon: '🐣', title: 'Premier Pas', desc: 'Premier exercice complété' },
-        { id: 'streak_3', icon: '🔥', title: 'Régularité', desc: '3 jours de suite' },
-        { id: 'master_lang', icon: '🧠', title: 'As de la langue', desc: 'Atteindre le niveau 3 en Langue' },
-        { id: 'xp_100', icon: '⭐', title: 'Centurion', desc: 'Atteindre 100 XP' }
-    ];
-
-    // Banque d'exercices (exemple)
-    const questions = [
-        { 
-            q: "Identifie la fonction du groupe souligné : 'Le soir, <u>le jeune garçon</u> lisait.'", 
-            optionsVoici la structure des compétences officielles évaluées au DNB en français, suivie d'une application web complète (HTML, CSS, JS) conçue pour un entraînement quotidien. 
-
-Les compétences du cycle 4 (définies par le socle commun et le BO) se divisent en quatre piliers pour l'épreuve de français :
-1. **Compréhension et interprétation :** Analyser un texte littéraire et un document iconographique (repérage, inférence, interprétation).
-2. **Étude de la langue :** Maîtriser la grammaire, le vocabulaire et l'orthographe (réécriture, analyse syntaxique).
-3. **Rédaction :** Produire un texte articulé et cohérent (au choix : sujet d'imagination ou sujet de réflexion).
-4. **Dictée :** Mobiliser les règles de l'orthographe grammaticale et lexicale.
-
-Le code ci-dessous est une application web autonome (Single Page Application) fonctionnant avec le `localStorage` du navigateur. Elle est prête à être déployée sur une solution d'hébergement statique (comme GitHub Pages) et utilise des titres de badges épicènes pour un environnement inclusif et motivant.
-
-```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cap Brevet : Objectif Français</title>
+    <title>Cap Brevet : Français 3ème</title>
     <style>
         :root {
             --primary: #4F46E5;
+            --primary-hover: #4338CA;
             --secondary: #10B981;
             --bg: #F3F4F6;
             --card: #FFFFFF;
             --text: #1F2937;
+            --error: #EF4444;
+            --warning: #F59E0B;
         }
 
         body {
@@ -240,7 +21,7 @@ Le code ci-dessous est une application web autonome (Single Page Application) fo
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -250,14 +31,15 @@ Le code ci-dessous est une application web autonome (Single Page Application) fo
             max-width: 800px;
             width: 100%;
             background: var(--card);
-            padding: 30px;
+            padding: 25px;
             border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            box-sizing: border-box;
         }
 
         header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         .dashboard-stats {
@@ -265,46 +47,67 @@ Le code ci-dessous est une application web autonome (Single Page Application) fo
             justify-content: space-around;
             background: #E0E7FF;
             padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
             font-weight: bold;
         }
 
-        .streak {
-            color: #D97706;
+        .streak { color: #D97706; }
+        .xp { color: #4F46E5; }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #E5E7EB;
+            padding-bottom: 10px;
         }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 10px 15px;
+            font-size: 1em;
+            font-weight: bold;
+            color: #6B7280;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
 
         h2 {
-            border-bottom: 2px solid var(--primary);
-            padding-bottom: 5px;
             color: var(--primary);
+            margin-top: 0;
         }
 
-        .skill-container {
-            margin-bottom: 20px;
-        }
-
+        /* Competences */
+        .skill-container { margin-bottom: 18px; }
         .skill-header {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 5px;
-            font-weight: 500;
+            margin-bottom: 6px;
+            font-weight: 600;
         }
-
         .progress-bg {
             background: #E5E7EB;
-            height: 20px;
+            height: 18px;
             border-radius: 10px;
             overflow: hidden;
         }
-
         .progress-bar {
             height: 100%;
             background: var(--primary);
             width: 0%;
             transition: width 0.5s ease;
         }
-
         .status-label {
             font-size: 0.85em;
             color: #6B7280;
@@ -312,71 +115,124 @@ Le code ci-dessous est une application web autonome (Single Page Application) fo
             display: block;
         }
 
+        /* Badges */
         .badges-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
             gap: 15px;
-            margin-top: 20px;
+            margin-top: 15px;
         }
-
         .badge {
             background: #F9FAFB;
             border: 2px solid #E5E7EB;
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 15px;
             text-align: center;
-            opacity: 0.4;
+            opacity: 0.35;
             transition: 0.3s;
         }
-
         .badge.unlocked {
             opacity: 1;
             border-color: var(--secondary);
             background: #ECFDF5;
-            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
         }
+        .badge-icon { font-size: 2.2em; margin-bottom: 5px; }
+        .badge-title { font-size: 0.85em; font-weight: bold; }
 
-        .badge-icon {
-            font-size: 2em;
-            margin-bottom: 5px;
+        /* Quiz Box */
+        .quiz-card {
+            background: #F9FAFB;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
         }
-
-        .badge-title {
-            font-size: 0.9em;
+        .domain-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            background: #E0E7FF;
+            color: var(--primary);
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        .text-extract {
+            background: #FFF;
+            border-left: 4px solid var(--primary);
+            padding: 12px;
+            font-style: italic;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            line-height: 1.5;
+        }
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .option-btn {
+            background: white;
+            border: 2px solid #D1D5DB;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .option-btn:hover {
+            border-color: var(--primary);
+            background: #F3F4F6;
+        }
+        .option-btn.correct {
+            background: #D1FAE5;
+            border-color: var(--secondary);
+            color: #065F46;
             font-weight: bold;
         }
-
-        .actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 30px;
+        .option-btn.incorrect {
+            background: #FEE2E2;
+            border-color: var(--error);
+            color: #991B1B;
         }
 
-        button {
+        .feedback {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            display: none;
+            line-height: 1.4;
+        }
+        .feedback.show { display: block; }
+        .feedback.success { background: #D1FAE5; color: #065F46; }
+        .feedback.error { background: #FEE2E2; color: #991B1B; }
+
+        .btn-main {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 12px;
+            padding: 12px 20px;
             border-radius: 8px;
             cursor: pointer;
             font-size: 1em;
             font-weight: bold;
-            transition: background 0.2s;
+            width: 100%;
+            margin-top: 15px;
         }
-
-        button:hover {
-            background: #4338CA;
-        }
+        .btn-main:hover { background: var(--primary-hover); }
 
         .reset-btn {
-            background: #EF4444;
-            margin-top: 20px;
+            background: transparent;
+            color: #9CA3AF;
+            border: none;
+            font-size: 0.8em;
+            cursor: pointer;
+            margin-top: 30px;
             width: 100%;
-        }
-
-        .reset-btn:hover {
-            background: #DC2626;
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -385,17 +241,36 @@ Le code ci-dessous est une application web autonome (Single Page Application) fo
 <div class="container">
     <header>
         <h1>🎓 Cap Brevet : Français</h1>
-        <p>Entraînement quotidien pour réussir l'épreuve</p>
+        <p>Révision pas à pas pour le DNB</p>
     </header>
 
     <div class="dashboard-stats">
-        <div class="streak">🔥 Assiduité : <span id="streak-count">0</span> jours de suite</div>
+        <div class="streak">🔥 Assiduité : <span id="streak-count">0</span> jour(s)</div>
         <div class="xp">⭐ Expérience : <span id="xp-count">0</span> XP</div>
     </div>
 
-    <section>
-        <h2>Progression des Compétences</h2>
-        <p style="font-size: 0.9em; color: #666;">Évaluation selon le socle commun (Insuffisante, Fragile, Satisfaisante, Très bonne).</p>
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('quiz-tab')">✍️ S'entraîner</button>
+        <button class="tab-btn" onclick="switchTab('stats-tab')">📊 Progression</button>
+        <button class="tab-btn" onclick="switchTab('badges-tab')">🏆 Badges</button>
+    </div>
+
+    <!-- ONGLET 1 : ENTRAÎNEMENT INTERACTIF -->
+    <div id="quiz-tab" class="tab-content active">
+        <div class="quiz-card">
+            <span class="domain-tag" id="question-domain">Domaine</span>
+            <div id="text-extract-container" class="text-extract" style="display:none;"></div>
+            <div id="question-text" style="font-weight: 600; font-size: 1.05em;">Chargement de la question...</div>
+            
+            <div class="options-list" id="options-container"></div>
+            <div id="feedback-box" class="feedback"></div>
+        </div>
+        <button id="next-btn" class="btn-main" onclick="nextQuestion()" style="display:none;">Question suivante ➔</button>
+    </div>
+
+    <!-- ONGLET 2 : PROGRESSION SCOLARISE -->
+    <div id="stats-tab" class="tab-content">
+        <h2>Progression par Compétences (BO)</h2>
         
         <div class="skill-container">
             <div class="skill-header"><span>📖 Compréhension & Interprétation</span> <span id="val-comp">0%</span></div>
@@ -410,134 +285,251 @@ Le code ci-dessous est une application web autonome (Single Page Application) fo
         </div>
 
         <div class="skill-container">
-            <div class="skill-header"><span>✍️ Rédaction</span> <span id="val-redac">0%</span></div>
-            <div class="progress-bg"><div class="progress-bar" id="bar-redac"></div></div>
-            <span class="status-label" id="status-redac">Maîtrise insuffisante</span>
-        </div>
-
-        <div class="skill-container">
             <div class="skill-header"><span>📝 Dictée & Orthographe</span> <span id="val-dict">0%</span></div>
             <div class="progress-bg"><div class="progress-bar" id="bar-dict"></div></div>
             <span class="status-label" id="status-dict">Maîtrise insuffisante</span>
         </div>
-    </section>
 
-    <section>
-        <h2>Trophées & Badges</h2>
+        <div class="skill-container">
+            <div class="skill-header"><span>✍️ Rédaction & Vocabulaire</span> <span id="val-redac">0%</span></div>
+            <div class="progress-bg"><div class="progress-bar" id="bar-redac"></div></div>
+            <span class="status-label" id="status-redac">Maîtrise insuffisante</span>
+        </div>
+    </div>
+
+    <!-- ONGLET 3 : BADGES -->
+    <div id="badges-tab" class="tab-content">
+        <h2>Tes Récompenses</h2>
         <div class="badges-container">
+            <div class="badge" id="badge-first">
+                <div class="badge-icon">🎯</div>
+                <div class="badge-title">Premier Pas</div>
+                <div style="font-size: 0.75em; color: #666; margin-top:3px;">1ère réponse exacte</div>
+            </div>
             <div class="badge" id="badge-streak">
                 <div class="badge-icon">🔥</div>
-                <div class="badge-title">Fidèle au Poste</div>
-                <div style="font-size: 0.7em">3 jours de suite</div>
-            </div>
-            <div class="badge" id="badge-comp">
-                <div class="badge-icon">🕵️</div>
-                <div class="badge-title">Spécialiste du Sens</div>
-                <div style="font-size: 0.7em">Compréhension > 70%</div>
+                <div class="badge-title">Régularité</div>
+                <div style="font-size: 0.75em; color: #666; margin-top:3px;">2 jours d'affilée</div>
             </div>
             <div class="badge" id="badge-gram">
                 <div class="badge-icon">🧠</div>
-                <div class="badge-title">As de la Syntaxe</div>
-                <div style="font-size: 0.7em">Grammaire > 70%</div>
+                <div class="badge-title">As de la Langue</div>
+                <div style="font-size: 0.75em; color: #666; margin-top:3px;">Grammaire > 50%</div>
             </div>
-            <div class="badge" id="badge-redac">
-                <div class="badge-icon">✨</div>
-                <div class="badge-title">Plume Créative</div>
-                <div style="font-size: 0.7em">Rédaction > 70%</div>
+            <div class="badge" id="badge-comp">
+                <div class="badge-icon">🔍</div>
+                <div class="badge-title">Spécialiste du Sens</div>
+                <div style="font-size: 0.75em; color: #666; margin-top:3px;">Compréhension > 50%</div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <section>
-        <h2>Simulateur d'Entraînement</h2>
-        <p style="font-size: 0.85em;">(Ces boutons remplacent temporairement les véritables exercices pour démontrer la logique de progression)</p>
-        <div class="actions">
-            <button onclick="simulateExercise('comp', 15)">+ Ex. Compréhension</button>
-            <button onclick="simulateExercise('gram', 15)">+ Ex. Grammaire</button>
-            <button onclick="simulateExercise('redac', 10)">+ Ex. Rédaction</button>
-            <button onclick="simulateExercise('dict', 20)">+ Ex. Dictée</button>
-        </div>
-        <button class="reset-btn" onclick="resetData()">Réinitialiser les données</button>
-    </section>
+    <button class="reset-btn" onclick="resetData()">Réinitialiser la progression</button>
 </div>
 
 <script>
-    // Initialisation des données
-    let userData = JSON.parse(localStorage.getItem('brevetData')) || {
-        skills: { comp: 0, gram: 0, redac: 0, dict: 0 },
+    // BANQUE D'EXERCICES OFFICIELS BREVET
+    const questionBank = [
+        {
+            domain: "gram",
+            domainLabel: "⚙️ Grammaire - Classes grammaticales",
+            question: "Dans la phrase : « Elle marche <u>lentement</u> vers la gare », quelle est la classe grammaticale du mot souligné ?",
+            options: ["Un adjectif qualificatif", "Un adverbe", "Un nom commun", "Un préposition"],
+            answer: 1,
+            explanation: "« Lentement » est un adverbe de manière. Il modifie le sens du verbe « marche ». Les mots se terminant par « -ment » sont très souvent des adverbes."
+        },
+        {
+            domain: "comp",
+            domainLabel: "📖 Compréhension & Figures de style",
+            extract: "« La neige étendait son blanc manteau sur la ville endormie. »",
+            question: "Quelle figure de style est utilisée dans cette phrase ?",
+            options: ["Une comparaison", "Une métaphore", "Une hyperbole", "Une oxymore"],
+            answer: 1,
+            explanation: "C'est une métaphore. La neige est assimilée à un « manteau » sans utiliser d'outil de comparaison (comme « comme » ou « pareil à »)."
+        },
+        {
+            domain: "dict",
+            domainLabel: "📝 Orthographe & Accords",
+            question: "Choisissez la forme correcte : « Les lettres qu'il a [...] sont arrivées ce matin. »",
+            options: ["écrit", "écrite", "écrits", "écrites"],
+            answer: 3,
+            explanation: "Le participe passé employé avec l'auxiliaire « avoir » s'accorde avec le COD si celui-ci est placé avant le verbe. Ici, « qu' » mis pour « les lettres » (féminin pluriel) est placé avant."
+        },
+        {
+            domain: "redac",
+            domainLabel: "✍️ Vocabulaire & Connecteurs logiques",
+            question: "Quel connecteur permet d'exprimer une OPPOSITION entre deux idées ?",
+            options: ["Par conséquent", "En effet", "Cependant", "De plus"],
+            answer: 2,
+            explanation: "« Cependant » (tout comme « néanmoins » ou « toutefois ») marque la concession ou l'opposition. « Par conséquent » exprime la conséquence."
+        },
+        {
+            domain: "gram",
+            domainLabel: "⚙️ Grammaire - Valeur des temps",
+            extract: "« Le soleil brillait. Soudain, un coup de tonnerre éclata. »",
+            question: "Pourquoi le verbe « éclata » est-il au passé simple ?",
+            options: [
+                "Pour exprimer une action longue et répétée",
+                "Pour décrire le paysage",
+                "Pour exprimer une action soudaine et de premier plan",
+                "Pour exprimer un fait habitude"
+            ],
+            answer: 2,
+            explanation: "Dans un récit au passé, l'imparfait sert au décor/actions secondaires (« brillait »), tandis que le passé simple exprime les actions soudaines qui font avancer le récit (« éclata »)."
+        },
+        {
+            domain: "dict",
+            domainLabel: "📝 Homophones grammaticaux",
+            question: "Complétez : « [...] élèves sont partis en sortie, mais [...] ne sait où. »",
+            options: ["Ces / on", "Ses / ont", "C'est / on", "S'est / ont"],
+            answer: 0,
+            explanation: "« Ces » est un adjectif démonstratif (ces élèves-là). « On » est un prénom personnel sujet (on ne sait)."
+        }
+    ];
+
+    // DONNÉES UTILISATEUR (LocalStorage)
+    let userData = JSON.parse(localStorage.getItem('brevetData_v2')) || {
+        skills: { comp: 0, gram: 0, dict: 0, redac: 0 },
         xp: 0,
-        streak: 0,
-        lastLogin: null
+        streak: 1,
+        lastLogin: new Date().toDateString(),
+        questionsAnswered: 0,
+        currentIndex: 0
     };
+
+    let currentQ = null;
+    let answered = false;
 
     function init() {
         checkStreak();
         updateUI();
+        loadQuestion();
     }
 
-    // Gestion de l'assiduité (Streak)
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
     function checkStreak() {
         const today = new Date().toDateString();
         if (userData.lastLogin !== today) {
-            if (userData.lastLogin === new Date(Date.now() - 86400000).toDateString()) {
+            const yesterday = new Date(Date.now() - 86400000).toDateString();
+            if (userData.lastLogin === yesterday) {
                 userData.streak += 1;
             } else {
-                userData.streak = 1; 
+                userData.streak = 1;
             }
             userData.lastLogin = today;
             saveData();
         }
     }
 
-    // Évaluation officielle
-    function getStatus(value) {
-        if (value < 25) return "Maîtrise insuffisante";
-        if (value < 50) return "Maîtrise fragile";
-        if (value < 75) return "Maîtrise satisfaisante";
+    function loadQuestion() {
+        answered = false;
+        document.getElementById('next-btn').style.display = 'none';
+        
+        const feedback = document.getElementById('feedback-box');
+        feedback.className = 'feedback';
+        feedback.innerText = '';
+
+        currentQ = questionBank[userData.currentIndex % questionBank.length];
+
+        document.getElementById('question-domain').innerText = currentQ.domainLabel;
+        
+        const extractBox = document.getElementById('text-extract-container');
+        if (currentQ.extract) {
+            extractBox.innerText = currentQ.extract;
+            extractBox.style.display = 'block';
+        } else {
+            extractBox.style.display = 'none';
+        }
+
+        document.getElementById('question-text').innerText = currentQ.question;
+
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = '';
+
+        currentQ.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt;
+            btn.onclick = () => selectOption(idx, btn);
+            optionsContainer.appendChild(btn);
+        });
+    }
+
+    function selectOption(idx, selectedBtn) {
+        if (answered) return;
+        answered = true;
+
+        const buttons = document.querySelectorAll('.option-btn');
+        buttons.forEach(b => b.style.cursor = 'default');
+
+        const feedback = document.getElementById('feedback-box');
+
+        if (idx === currentQ.answer) {
+            selectedBtn.classList.add('correct');
+            feedback.className = 'feedback show success';
+            feedback.innerHTML = `<strong>Excellente réponse ! 🎉</strong><br>${currentQ.explanation}`;
+            
+            // Progression
+            userData.xp += 20;
+            userData.skills[currentQ.domain] = Math.min(100, userData.skills[currentQ.domain] + 15);
+            userData.questionsAnswered += 1;
+        } else {
+            selectedBtn.classList.add('incorrect');
+            buttons[currentQ.answer].classList.add('correct');
+            feedback.className = 'feedback show error';
+            feedback.innerHTML = `<strong>Attention :</strong><br>${currentQ.explanation}`;
+        }
+
+        saveData();
+        updateUI();
+        document.getElementById('next-btn').style.display = 'block';
+    }
+
+    function nextQuestion() {
+        userData.currentIndex += 1;
+        saveData();
+        loadQuestion();
+    }
+
+    function getStatus(val) {
+        if (val < 25) return "Maîtrise insuffisante";
+        if (val < 50) return "Maîtrise fragile";
+        if (val < 75) return "Maîtrise satisfaisante";
         return "Très bonne maîtrise";
     }
 
-    // Mise à jour de l'interface
     function updateUI() {
         document.getElementById('streak-count').innerText = userData.streak;
         document.getElementById('xp-count').innerText = userData.xp;
 
-        ['comp', 'gram', 'redac', 'dict'].forEach(skill => {
-            const val = Math.min(userData.skills[skill], 100);
+        ['comp', 'gram', 'dict', 'redac'].forEach(skill => {
+            const val = userData.skills[skill];
             document.getElementById(`bar-${skill}`).style.width = `${val}%`;
             document.getElementById(`val-${skill}`).innerText = `${val}%`;
             document.getElementById(`status-${skill}`).innerText = getStatus(val);
         });
 
-        checkBadges();
-    }
-
-    // Déverrouillage des badges
-    function checkBadges() {
-        if (userData.streak >= 3) document.getElementById('badge-streak').classList.add('unlocked');
-        if (userData.skills.comp >= 70) document.getElementById('badge-comp').classList.add('unlocked');
-        if (userData.skills.gram >= 70) document.getElementById('badge-gram').classList.add('unlocked');
-        if (userData.skills.redac >= 70) document.getElementById('badge-redac').classList.add('unlocked');
-    }
-
-    // Simulation d'un exercice réussi
-    function simulateExercise(skill, points) {
-        if (userData.skills[skill] < 100) {
-            userData.skills[skill] += points;
-            if (userData.skills[skill] > 100) userData.skills[skill] = 100;
-            userData.xp += 50;
-            saveData();
-            updateUI();
-        }
+        // Badges
+        if (userData.questionsAnswered >= 1) document.getElementById('badge-first').classList.add('unlocked');
+        if (userData.streak >= 2) document.getElementById('badge-streak').classList.add('unlocked');
+        if (userData.skills.gram >= 50) document.getElementById('badge-gram').classList.add('unlocked');
+        if (userData.skills.comp >= 50) document.getElementById('badge-comp').classList.add('unlocked');
     }
 
     function saveData() {
-        localStorage.setItem('brevetData', JSON.stringify(userData));
+        localStorage.setItem('brevetData_v2', JSON.stringify(userData));
     }
 
     function resetData() {
-        if(confirm("Voulez-vous vraiment effacer toute la progression ?")) {
-            localStorage.removeItem('brevetData');
+        if (confirm("Réinitialiser toute la progression de l'élève ?")) {
+            localStorage.removeItem('brevetData_v2');
             location.reload();
         }
     }
